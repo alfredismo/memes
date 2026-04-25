@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memes — bore.lol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; color: #eee; font-family: sans-serif; }
+    .site-header {
+      padding: 1.5rem 2rem 0.5rem;
+      text-align: center;
+    }
+    .site-header a {
+      font-family: 'Jacquard 12', cursive;
+      font-size: 2.2rem;
+      color: #39ff14;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: opacity 0.2s;
+    }
+    .site-header a:hover { opacity: 0.7; }
+    .page-subtitle {
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #444;
+      padding: 0.3rem 0 1.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 4px;
+      padding: 0 4px 4px;
+    }
+    .grid-item {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      background: #111;
+      cursor: pointer;
+    }
+    .grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .grid-item:hover img {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+    .grid-item .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      padding: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    }
+    .grid-item:hover .overlay { opacity: 1; }
+    .overlay span {
+      font-size: 0.75rem;
+      color: #39ff14;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    /* LIGHTBOX */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #lightbox.active { display: flex; }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+    #lb-close {
+      position: fixed;
+      top: 1rem; right: 1.5rem;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+    }
+    #lb-prev, #lb-next {
+      position: fixed;
+      top: 50%; transform: translateY(-50%);
+      font-size: 2.5rem;
+      color: #fff;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      user-select: none;
+    }
+    #lb-prev { left: 1rem; }
+    #lb-next { right: 1rem; }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #333;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div class="site-header">
+  <a href="https://bore.lol">BORE</a>
+</div>
+<p class="page-subtitle">Meme Museum — PUROMEXA</p>
+
+<div class="grid" id="gallery">
+
+  <!-- Para agregar un meme: copia este bloque y cambia src y el titulo -->
+  <!-- <div class="grid-item" data-index="0">
+    <img src="images/meme01.jpg" alt="Meme 01" loading="lazy">
+    <div class="overlay"><span>Titulo opcional</span></div>
+  </div> -->
+
+  <!-- ZONA DE MEMES — sube tus imagenes a la carpeta /images/ del repo y descomenta/agrega bloques -->
+
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span id="lb-close">&#x2715;</span>
+  <span id="lb-prev">&#x2039;</span>
+  <img id="lb-img" src="" alt="">
+  <span id="lb-next">&#x203A;</span>
+</div>
+
+<footer>memes.bore.lol</footer>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.grid-item'));
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  let current = 0;
+
+  function openLb(i) {
+    if (!items.length) return;
+    current = i;
+    lbImg.src = items[i].querySelector('img').src;
+    lb.classList.add('active');
+  }
+  function closeLb() { lb.classList.remove('active'); }
+  function prevLb() { openLb((current - 1 + items.length) % items.length); }
+  function nextLb() { openLb((current + 1) % items.length); }
+
+  items.forEach((el, i) => el.addEventListener('click', () => openLb(i)));
+  document.getElementById('lb-close').addEventListener('click', closeLb);
+  document.getElementById('lb-prev').addEventListener('click', prevLb);
+  document.getElementById('lb-next').addEventListener('click', nextLb);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') prevLb();
+    if (e.key === 'ArrowRight') nextLb();
+  });
+</script>
+
+</body>
+</html>
